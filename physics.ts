@@ -23,6 +23,11 @@ const Physics = (entities, { touches, time, dispatch }) => {
     const topBody = entities[`ObstacleTop${index}`].body;
     const bottomBody = entities[`ObstacleBottom${index}`].body;
 
+    if (topBody.bounds.max.x <= 50 && !entities[`ObstacleTop${index}`].point) {
+      entities[`ObstacleTop${index}`].point = true;
+      dispatch({ type: "new_point" });
+    }
+
     if (topBody.bounds.max.x <= 0) {
       const pipeSizePos = getPipeSizePosPair(windowWidth * 0.9);
       Matter.Body.setPosition(topBody, pipeSizePos.pipeTop.pos);
@@ -38,6 +43,10 @@ const Physics = (entities, { touches, time, dispatch }) => {
       y: 0,
     });
   }
+
+  Matter.Events.on(engine, "collisionStart", (event) => {
+    dispatch({ type: "game_over" });
+  });
 
   return entities;
 };

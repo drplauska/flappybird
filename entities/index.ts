@@ -1,12 +1,14 @@
 import Matter from "matter-js";
 import Bird from "../components/Bird";
 import Floor from "../components/Floor";
-import { useWindowDimensions } from "react-native";
 import Obstacle from "../components/Obstacle";
 import { getPipeSizePosPair } from "../utils/random";
+import { Dimensions } from "react-native";
+
+const windowHeight = Dimensions.get("window").height;
+const windowWidth = Dimensions.get("window").width;
 
 export default (restart) => {
-  const { height, width } = useWindowDimensions();
   let engine = Matter.Engine.create({
     enableSleeping: false,
     gravity: { y: 0.4 },
@@ -15,7 +17,7 @@ export default (restart) => {
   let world = engine.world;
 
   const pipeSizePosA = getPipeSizePosPair();
-  const pipeSizePosB = getPipeSizePosPair(width);
+  const pipeSizePosB = getPipeSizePosPair(windowWidth);
 
   return {
     physics: { engine, world },
@@ -54,8 +56,8 @@ export default (restart) => {
     Floor: Floor(
       world,
       "green",
-      { x: width / 2, y: height },
-      { height: 50, width: width }
+      { x: windowWidth / 2, y: windowHeight },
+      { height: 50, width: windowWidth }
     ),
   };
 };
