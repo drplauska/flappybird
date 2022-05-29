@@ -1,8 +1,8 @@
-import Matter from "matter-js";
 import React from "react";
 import { View } from "react-native";
+import { ComponentData } from "../types";
 
-const Floor = (props) => {
+const Floor = (props: ComponentData) => {
   const widthBody = props.body.bounds.max.x - props.body.bounds.min.x;
   const heightBody = props.body.bounds.max.y - props.body.bounds.min.y;
 
@@ -25,20 +25,4 @@ const Floor = (props) => {
   );
 };
 
-export default (world, color, pos, size) => {
-  const initialFloor = Matter.Bodies.rectangle(
-    pos.x,
-    pos.y,
-    size.width,
-    size.height,
-    { label: "Floor", isStatic: true }
-  );
-  Matter.World.add(world, initialFloor);
-
-  return {
-    body: initialFloor,
-    color,
-    pos,
-    renderer: <Floor />,
-  };
-};
+export default Floor;

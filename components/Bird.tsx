@@ -1,8 +1,8 @@
-import Matter from "matter-js";
 import React from "react";
 import { View } from "react-native";
+import { ComponentData } from "../types";
 
-const Bird = (props) => {
+const Bird = (props: ComponentData) => {
   const widthBody = props.body.bounds.max.x - props.body.bounds.min.x;
   const heightBody = props.body.bounds.max.y - props.body.bounds.min.y;
 
@@ -27,20 +27,4 @@ const Bird = (props) => {
   );
 };
 
-export default (world, color, pos, size) => {
-  const initialBird = Matter.Bodies.rectangle(
-    pos.x,
-    pos.y,
-    size.width,
-    size.height,
-    { label: "Bird" }
-  );
-  Matter.World.add(world, initialBird);
-
-  return {
-    body: initialBird,
-    color,
-    pos,
-    renderer: <Bird />,
-  };
-};
+export default Bird;

@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import entities from "./entities";
 import Physics from "./physics";
 
 export default function App() {
   const [running, setRunning] = useState(false);
-  const [gameEngine, setGameEngine] = useState(null);
   const [currentPoints, setCurrentPoints] = useState(0);
+  const gameEngineRef = useRef<GameEngine>(null);
 
   useEffect(() => {
     setRunning(false);
@@ -27,15 +27,17 @@ export default function App() {
         {currentPoints}
       </Text>
       <GameEngine
-        ref={(ref) => setGameEngine(ref)}
+        ref={gameEngineRef}
         systems={[Physics]}
         running={running}
         entities={entities()}
-        onEvent={(e) => {
+        onEvent={(e: { type: string }) => {
           switch (e.type) {
             case "game_over":
               setRunning(false);
-              gameEngine.stop();
+              if (gameEngineRef.current) {
+                gameEngineRef.current.stop();
+              }
               break;
             case "new_point":
               setCurrentPoints((value) => value + 1);
@@ -43,7 +45,7 @@ export default function App() {
           }
         }}
         style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-      ></GameEngine>
+      />
       <StatusBar style="auto" hidden />
       {!running ? (
         <View
@@ -58,7 +60,9 @@ export default function App() {
             onPress={() => {
               setCurrentPoints(0);
               setRunning(true);
-              gameEngine.swap(entities());
+              if (gameEngineRef.current) {
+                gameEngineRef.current.swap(entities());
+              }
             }}
           >
             <Text style={{ fontWeight: "bold", color: "white", fontSize: 30 }}>
